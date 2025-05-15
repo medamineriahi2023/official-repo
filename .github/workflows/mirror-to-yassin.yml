@@ -1,0 +1,33 @@
+name: Mirror to Yassin's Repository
+
+on:
+  push:
+    branches:
+      - '**'
+  create:
+    branches:
+      - '**'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "medaminer"
+          git config user.email "medaminer@gmail.com"
+
+      - name: Add Yassin's repository as remote
+        run: |
+          git remote add medaminer https://medaminer:${{ secrets.YASSIN_PAT }}@github.com/yassin/official-repo.git
+
+      - name: Push changes to Yassin's repository
+        run: |
+          git push medaminer --all
+          git push medaminer --tags
+
