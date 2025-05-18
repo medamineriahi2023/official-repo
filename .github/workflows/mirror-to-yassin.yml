@@ -1,4 +1,4 @@
-name: Mirror to Medaminer's Repository
+name: Sync to Medaminer Repo
 
 on:
   push:
@@ -9,12 +9,15 @@ on:
       - '**'
 
 jobs:
-  mirror:
+  sync:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout source repository
+      - name: Checkout destination repository
         uses: actions/checkout@v3
         with:
+          repository: medamineriahi2023/official-repo
+          token: ${{ secrets.MEDAMINERIAHI2023_PAT }}
           fetch-depth: 0
 
       - name: Configure Git
@@ -22,7 +25,11 @@ jobs:
           git config user.name "medaminer"
           git config user.email "medaminer@gmail.com"
 
-      - name: Push changes to Medaminer's repository
+      - name: Add Medaminer repository as remote
         run: |
-          git push origin --all
-          git push origin --tags
+          git remote add destination https://x-access-token:${{ secrets.MEDAMINER_PAT }}@github.com/medaminer/official-repo.git
+
+      - name: Push changes to Medaminer repository
+        run: |
+          git push destination --all --force
+          git push destination --tags --force
