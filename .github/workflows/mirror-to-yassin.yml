@@ -34,7 +34,7 @@ jobs:
 
       - name: Add Medaminer repository as remote
         run: |
-          git remote add destination https://x-access-token:${{ secrets.MEDAMINER_PAT }}@github.com/medaminer/official-repo.git
+          git remote add destination https://x-access-token:${{ secrets.YASSIN_PAT }}@github.com/medaminer/official-repo.git
 
       - name: Authenticate as Medaminer
         env:
