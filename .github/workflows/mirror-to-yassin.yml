@@ -13,42 +13,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout destination repository
+      - name: Checkout source repository (medamineriahi2023)
         uses: actions/checkout@v3
         with:
           repository: medamineriahi2023/official-repo
           token: ${{ secrets.MEDAMINERIAHI2023_PAT }}
           fetch-depth: 0
 
-      - name: Get Default Branch Name
-        id: default_branch
-        run: |
-          DEFAULT_BRANCH=$(git remote show origin | grep "HEAD branch" | awk '{print $NF}')
-          echo "Default branch: $DEFAULT_BRANCH"
-          echo "::set-output name=branch::$DEFAULT_BRANCH"
-
-      - name: Configure Git
+      - name: Configure Git author info as medaminer
         run: |
           git config user.name "medaminer"
           git config user.email "medaminer@gmail.com"
 
-      - name: Add Medaminer repository as remote
+      - name: Add destination remote (medaminer)
         run: |
           git remote add destination https://x-access-token:${{ secrets.YASSIN_PAT }}@github.com/medaminer/official-repo.git
 
-      - name: Authenticate as Medaminer
-        env:
-          GIT_AUTHOR_NAME: medaminer
-          GIT_AUTHOR_EMAIL: medaminer@gmail.com
-          GIT_COMMITTER_NAME: medaminer
-          GIT_COMMITTER_EMAIL: medaminer@gmail.com
-        run: |
-          git fetch destination
-          git branch -r
-          git checkout -B ${{ steps.default_branch.outputs.branch }} origin/${{ steps.default_branch.outputs.branch }} || git checkout -b ${{ steps.default_branch.outputs.branch }}
-          git pull destination ${{ steps.default_branch.outputs.branch }} --rebase || true
+      - name: Show Git remotes for debugging
+        run: git remote -v
 
-      - name: Push changes to Medaminer repository
+      - name: Fetch all branches from origin
+        run: git fetch origin --prune
+
+      - name: Push all branches and tags to destination
         run: |
-          git push destination ${{ steps.default_branch.outputs.branch }} --force
+          git push destination --all --force
           git push destination --tags --force
