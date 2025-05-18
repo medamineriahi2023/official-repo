@@ -22,10 +22,6 @@ jobs:
           git config user.name "medaminer"
           git config user.email "medaminer@gmail.com"
 
-      - name: Add Medaminer's repository as remote
-        run: |
-          git remote add origin https://x-access-token:${{ secrets.YASSIN_PAT }}@github.com/medaminer/official-repo.git
-
       - name: Push changes to Medaminer's repository
         run: |
           git push origin --all
