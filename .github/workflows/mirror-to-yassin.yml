@@ -23,7 +23,7 @@ jobs:
       - name: Get Default Branch Name
         id: default_branch
         run: |
-          DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+          DEFAULT_BRANCH=$(git remote show origin | grep "HEAD branch" | awk '{print $NF}')
           echo "Default branch: $DEFAULT_BRANCH"
           echo "::set-output name=branch::$DEFAULT_BRANCH"
 
@@ -44,7 +44,7 @@ jobs:
           GIT_COMMITTER_EMAIL: medaminer@gmail.com
         run: |
           git fetch destination
-          git checkout ${{ steps.default_branch.outputs.branch }}
+          git switch ${{ steps.default_branch.outputs.branch }} || git checkout -b ${{ steps.default_branch.outputs.branch }}
           git pull destination ${{ steps.default_branch.outputs.branch }} --rebase
 
       - name: Push changes to Medaminer repository
