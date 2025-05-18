@@ -24,7 +24,7 @@ jobs:
 
       - name: Add Yassin's repository as remote
         run: |
-          git remote add medaminer https://medaminer:${{ secrets.YASSIN_PAT }}@github.com/yassin/official-repo.git
+          git remote add medaminer https://medaminer:${{ secrets.YASSIN_PAT }}@github.com/medaminer/official-repo.git
 
       - name: Push changes to Yassin's repository
         run: |
