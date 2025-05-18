@@ -29,7 +29,17 @@ jobs:
         run: |
           git remote add destination https://x-access-token:${{ secrets.MEDAMINER_PAT }}@github.com/medaminer/official-repo.git
 
+      - name: Authenticate as Medaminer
+        env:
+          GIT_AUTHOR_NAME: medaminer
+          GIT_AUTHOR_EMAIL: medaminer@gmail.com
+          GIT_COMMITTER_NAME: medaminer
+          GIT_COMMITTER_EMAIL: medaminer@gmail.com
+        run: |
+          git fetch destination
+          git rebase destination/main
+
       - name: Push changes to Medaminer repository
         run: |
-          git push destination --all --force
+          git push destination main --force
           git push destination --tags --force
