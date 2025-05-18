@@ -25,17 +25,22 @@ jobs:
           git config user.name "medaminer"
           git config user.email "medaminer@gmail.com"
 
-      - name: Add destination remote (medaminer)
+      - name: Clear existing Git credentials to avoid conflicts
+        run: |
+          git credential-cache exit || true
+          rm -f ~/.git-credentials
+          git config --global --unset credential.helper || true
+
+      - name: Add destination remote (medaminer) with embedded PAT
         run: |
           git remote add destination https://x-access-token:${{ secrets.YASSIN_PAT }}@github.com/medaminer/official-repo.git
+          # Force set the remote URL to include the token explicitly (no caching)
+          git remote set-url destination https://x-access-token:${{ secrets.YASSIN_PAT }}@github.com/medaminer/official-repo.git
 
       - name: Show Git remotes for debugging
         run: git remote -v
 
-      - name: Fetch all branches from origin
-        run: git fetch origin --prune
-
-      - name: Push all branches and tags to destination
+      - name: Push all branches and tags to destination (medaminer)
         run: |
           git push destination --all --force
           git push destination --tags --force
